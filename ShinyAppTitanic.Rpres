@@ -1,0 +1,58 @@
+Coursera Developing Data Products Project: Shiny App Titanic
+========================================================
+author: Larionova Anna
+date: 17.06.2015
+transition: rotate
+
+Introduction
+========================================================
+
+The sinking of the RMS Titanic is one of the most infamous shipwrecks in history.  On April 15, 1912, during her maiden voyage, the Titanic sank after colliding with an iceberg, killing 1502 out of 2224 passengers and crew. This sensational tragedy shocked the international community and led to better safety regulations for ships.
+
+In this app I try to investigate the chanse to survive for passangers of Titanic.
+
+The Algorithm
+========================================================
+
+```{r, echo=FALSE}
+library(shiny)
+library(Rcpp)
+library(httpuv)
+library(rpart)
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+train <- read.csv("C:/Documents and Settings/Администратор/Shiny App/train.csv", stringsAsFactors=FALSE)
+test <- read.csv("C:/Documents and Settings/Администратор/Shiny App/test.csv", stringsAsFactors=FALSE)
+train$Child <- 0
+train$Child[train$Age < 18] <- 1
+train$Fare2 <- '30+'
+train$Fare2[train$Fare < 30 & train$Fare >= 20] <- '20-30'
+train$Fare2[train$Fare < 20 & train$Fare >= 10] <- '10-20'
+train$Fare2[train$Fare < 10] <- '<10'
+test$Survived <- 0
+test$Survived[test$Sex == 'female'] <- 1
+test$Survived[test$Sex == 'female' & test$Pclass == 3 & test$Fare >= 20] <- 0
+
+```
+```{r}
+fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked, data = train, method = "class")
+Prediction <- predict(fit, test, type = "prob")
+```
+
+Here I use the decission tree to predict chances to survive on few parameters: Passenger Class, Sex, Age, Number of Siblings/Spouses Aboard, Number of Parents/Children Aboard", Passenger Fare, Port of Embarkation. So one parameters are more important than others. You can see it on the  next slide.
+
+Decission Tree
+========================================================
+
+```{r, echo=FALSE}
+fancyRpartPlot(fit)
+```
+
+The most important parameter is gender, second is passenger class, third is age (for men is the most important), etc.
+
+Shiny app
+========================================================
+
+To run this app, enter values on the left and press submit button.
+![picture of ShinyApp](ShinyAppTitanic-figure/app.PNG)

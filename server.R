@@ -6,8 +6,10 @@ library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
 
-train <- read.csv("C:/Documents and Settings/Администратор/Shiny App/train.csv", stringsAsFactors=FALSE)
-test <- read.csv("C:/Documents and Settings/Администратор/Shiny App/test.csv", stringsAsFactors=FALSE)
+#train <- read.csv("C:/Users/User/Documents/Shiny-App/train.csv", stringsAsFactors=FALSE)
+#test <- read.csv("C:/Users/User/Documents/Shiny-App/test.csv", stringsAsFactors=FALSE)
+train<-read.csv("./Data/train.csv")
+test<-read.csv("./Data/test.csv")
 
 train$Child <- 0
 train$Child[train$Age < 18] <- 1
